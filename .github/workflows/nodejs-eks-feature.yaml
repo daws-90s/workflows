@@ -21,3 +21,12 @@ jobs:
     - name: list files
       run: |
         ls -l
+    
+    - name: read version
+      id: version
+      run: |
+        VERSION=$(jq -r '.version' package.json)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+    - name: print version
+      run: echo "The version is ${{ steps.version.outputs.version }}"
