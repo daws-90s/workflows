@@ -13,7 +13,10 @@ env:
   component: "${{ inputs.component }}"
 jobs:
   build-nodejs:
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on:
+      group: roboshop
+      labels: nodejs
     steps:
     - name: code checkout
       uses: actions/checkout@v7 # these are like plugins in jenkins
@@ -30,3 +33,4 @@ jobs:
 
     - name: print version
       run: echo "The version is ${{ steps.version.outputs.version }}"
+
