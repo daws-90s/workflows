@@ -61,11 +61,6 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v4
 
-      # - name: setup node
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: '18'
-
       # mirrors 'read-version' stage — appVersion tags dev images/deploys,
       # same as packageJson.version did in the Jenkinsfile
       - name: read-version
@@ -337,19 +332,19 @@ jobs:
 
       # # mirrors 'raise-pr' stage — same create-or-find semantics as
       # # utils.createPullRequest(), scoped to this repo so the default token is enough
-      # - name: raise-pr
-      #   if: github.ref_name != 'main'
-      #   env:
-      #     GH_TOKEN: ${{ github.token }}
-      #   run: |
-      #     set -e
-      #     existing=$(gh pr list --head "${{ github.ref_name }}" --base main --state open --json number --jq 'length')
-      #     if [ "$existing" -gt 0 ]; then
-      #       echo "PR already open for ${{ github.ref_name }} -> main"
-      #     else
-      #       body=$(printf 'Automated PR after successful dev-deploy and api-tests.\n\nRun: %s/%s/actions/runs/%s' \
-      #         "${{ github.server_url }}" "${{ github.repository }}" "${{ github.run_id }}")
-      #       gh pr create --base main --head "${{ github.ref_name }}" \
-      #         --title "${component}: ${{ github.ref_name }} -> main" \
-      #         --body "$body"
-      #     fi
+      - name: raise-pr
+        if: github.ref_name != 'main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          existing=$(gh pr list --head "${{ github.ref_name }}" --base main --state open --json number --jq 'length')
+          if [ "$existing" -gt 0 ]; then
+            echo "PR already open for ${{ github.ref_name }} -> main"
+          else
+            body=$(printf 'Automated PR after successful dev-deploy and api-tests.\n\nRun: %s/%s/actions/runs/%s' \
+              "${{ github.server_url }}" "${{ github.repository }}" "${{ github.run_id }}")
+            gh pr create --base main --head "${{ github.ref_name }}" \
+              --title "${component}: ${{ github.ref_name }} -> main" \
+              --body "$body"
+          fi
