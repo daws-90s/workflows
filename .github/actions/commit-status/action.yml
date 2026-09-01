@@ -10,6 +10,10 @@ inputs:
     required: true
   token:
     required: true
+  sha:
+    description: 'Commit SHA to post the status against (defaults to github.sha)'
+    required: false
+    default: ${{ github.sha }}
 runs:
   using: composite
   steps:
@@ -17,7 +21,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.token }}
       run: |
-        gh api --method POST repos/${{ github.repository }}/statuses/${{ github.sha }} \
+        gh api --method POST repos/${{ github.repository }}/statuses/${{ inputs.sha }} \
           -f state="${{ inputs.state }}" \
           -f context="${{ inputs.context }}" \
           -f description="${{ inputs.description }}" \
